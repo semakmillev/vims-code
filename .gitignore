@@ -7,3 +7,7 @@ credentials.json
 token.pickle
 *.ini
 *.ipynb
+__data
+_data
+all.sql
+clear_game.py
