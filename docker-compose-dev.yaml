@@ -1,0 +1,46 @@
+services:
+  vims_code_server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vims-code
+    volumes:
+      - ./:/srv/vims-code
+    ports:
+      - 0.0.0.0:7001:7001
+    networks:
+      - vims-network
+    working_dir: /srv/vims-code
+    entrypoint:
+      - dockerize
+      - -wait
+      - tcp://db:5432
+      - -timeout
+      - 60s
+    command: bash -c "make migrate && make run"
+    environment:
+      - TEST=TEST
+      - PG_HOST=postgresql+asyncpg://vims:vims@db:5432/vims
+      - SQL_HOST=db
+      - SQL_PORT=5432
+      - DATABASE_URL=postgres://vims:vims@db:5432/vims?search_path=e_code&sslmode=disable
+    depends_on:
+      - db
+  db:
+    image: postgres:12.0-alpine
+    container_name: db
+    ports:
+      - 0.0.0.0:25432:5432
+    environment:
+      - POSTGRES_USER=vims
+      - POSTGRES_PASSWORD=vims
+      - POSTGRES_DB=vims
+    networks:
+      - vims-network
+    volumes:
+      - ./_data:/var/lib/postgresql/data
+
+
+networks:
+  vims-network:
+    name: vims-network

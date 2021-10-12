@@ -1,0 +1,9 @@
+.idea
+venv
+tmp*.*
+logs
+*.tar
+credentials.json
+token.pickle
+*.ini
+*.ipynb
