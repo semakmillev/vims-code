@@ -6,6 +6,7 @@ from asyncio import sleep, Task
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine
 
+from vims_code.app import logger
 from vims_code.app.funcs import sql_cache, game_load_cache, cache_tables
 from vims_code.models.api import DatabaseConnectionPool, DatabaseConnection
 
@@ -95,7 +96,7 @@ class Game(object):
             if game_load_cache[self.game_id].get("level_list")
             else await ll.select(game_id=self.game_id)
         )
-        print(f"Levels loading start...{datetime.datetime.now()}")
+        logger.info(f"Levels loading start...{datetime.datetime.now()}")
         for level_row in level_rows:
             self.level_inner_map[level_row["id"]] = level_row["inner_id"]
             level = Level(
@@ -110,7 +111,7 @@ class Game(object):
             await level.load()
             self.level_dict[level_row["inner_id"]] = level
 
-        print(f"Levels loading finish...{datetime.datetime.now()}")
+        logger.info(f"Levels loading finish...{datetime.datetime.now()}")
         # self.clear_cache()
 
     async def load_teams(self, start_date):

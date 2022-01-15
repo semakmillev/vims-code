@@ -2,11 +2,11 @@ from sqlalchemy.ext.asyncio import AsyncConnection
 
 from vims_code.models.api import DatabaseConnection
 
-from vims_code.models.code_condition_list import CodeConditionList
+# from vims_code.models.code_condition_list import CodeConditionList
 from vims_code.models.code_list import CodeList
-from vims_code.models.code_param_value_list import CodeParamValueList
+# from vims_code.models.code_param_value_list import CodeParamValueList
 from vims_code.models.code_result_value_list import CodeResultValueList
-from vims_code.models.code_value_list import CodeValueList
+# from vims_code.models.code_value_list import CodeValueList
 from vims_code.models.info_condition_list import InfoConditionList
 from vims_code.models.level_condition_list import LevelConditionList
 from vims_code.models.level_list import LevelList
@@ -16,10 +16,9 @@ class CodeAdapter(object):
     def __init__(self, conn: AsyncConnection):
         self.conn = conn
         self.code_list = CodeList(conn)
-        self.code_value_list = CodeValueList(conn)
+        # self.code_value_list = CodeValueList(conn)
         self.code_result_value_list = CodeResultValueList(conn)
-        self.code_param_value_list = CodeParamValueList(conn)
-        self.code_condition_list = CodeConditionList(conn)
+        # self.code_condition_list = CodeConditionList(conn)
 
     async def get_code_by_inner_id(self, inner_id: str, level_id: int):
         try:
@@ -27,15 +26,14 @@ class CodeAdapter(object):
         except IndexError:
             return None
 
-    async def clear_code_links(self, code_inner_id, level_id):
-        await LevelConditionList(self.conn).clear_by_code(code_inner_id, level_id)
-        await InfoConditionList(self.conn).clear_by_code(code_inner_id, level_id)
+    # async def clear_code_links(self, code_inner_id, level_id):
+    #    await InfoConditionList(self.conn).clear_by_code(code_inner_id, level_id)
 
     async def delete_code(self, code_id):
-        await self.code_param_value_list.delete_by_code(code_id)
+        # await self.code_param_value_list.delete_by_code(code_id)
         await self.code_result_value_list.delete_by_code(code_id)
-        await self.code_value_list.delete_by_code(code_id)
-        await self.code_condition_list.delete_by_code(code_id)
+        # await self.code_value_list.delete_by_code(code_id)
+        # await self.code_condition_list.delete_by_code(code_id)
         await self.code_list.delete(code_id)
 
     async def set_by_request_code(self,
@@ -51,9 +49,11 @@ class CodeAdapter(object):
                                                caption=code_inner_id,
                                                code_values_info=code_inner_id,
                                                code_inner_id=code_inner_id)
+            '''
             await self.code_value_list.set(code_id=code_id,
                                            value_type='TEXT',
                                            code_value=code_inner_id)
+            '''
             await self.code_result_value_list.set(code_id=code_id,
                                                   result_code='SHOW_INFOS',
                                                   result_type='LIST',

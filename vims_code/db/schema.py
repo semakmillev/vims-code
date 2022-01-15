@@ -31,13 +31,6 @@ t_action_list = Table(
     Column("action_value", String(2000), nullable=True),
 )
 
-t_code_2_level = Table(
-    "code_2_level",
-    metadata,
-    Column("id", BigInteger, nullable=False, autoincrement=True, primary_key=True),
-    Column("level_id", BigInteger, nullable=False, index=True),
-    Column("code_id", BigInteger, nullable=False, index=False),
-)
 
 t_code_condition_list = Table(
     "code_condition_list",
@@ -91,15 +84,6 @@ Index(
     "ui_e_code_code_result_value_list_code_id",
     t_code_result_value_list.c.code_id,
     t_code_result_value_list.c.result_code,
-)
-
-t_code_value_list = Table(
-    "code_value_list",
-    metadata,
-    Column("id", BigInteger, nullable=False, autoincrement=True, primary_key=True),
-    Column("code_id", BigInteger, nullable=False, index=True),
-    Column("value_type", TABLE_CODE, nullable=False),
-    Column("code_value", TABLE_CODE, nullable=False),
 )
 
 t_game_author_list = Table(
@@ -177,6 +161,8 @@ t_info_list = Table(
     Column("level_id", BigInteger, nullable=True),
     Column("inner_id", TABLE_CODE, nullable=True),
     Column("condition_script", Text, nullable=True),
+    Column("info_type", String(200), nullable=True, default='SIMPLE'),
+    Column("level_link", String(200), nullable=True),
 )
 
 Index(

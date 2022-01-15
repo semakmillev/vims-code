@@ -6,7 +6,6 @@ from sqlalchemy.ext.asyncio import AsyncConnection
 from vims_code.app import ApplicationException
 from vims_code.app.funcs import game_load_cache
 from vims_code.models.code_list import CodeList
-from vims_code.models.code_value_list import CodeValueList
 from vims_code.models.info_list import InfoList
 from vims_code.models.level_condition_list import LevelConditionList
 from vims_code.models.level_list import LevelList
@@ -59,12 +58,14 @@ class Level(object):
     def __hash__(self):
         return f'L_{self.level_id}'
 
-    def __init__(self, conn: AsyncConnection, level_id: int, level_type: str, caption: str,
+    def __init__(self, conn: AsyncConnection,
+                 level_id: int,
+                 level_type: str,
+                 caption: str,
                  inner_id: str,
                  condition_script: str,
                  failed_condition_script: str,
-                 game_id: int,
-                 db_info=None):
+                 game_id: int):
         self.level_id = level_id
         self.level_type = level_type
         self.caption = caption
@@ -99,9 +100,6 @@ class Level(object):
         if (len(self.conditions.values()) == 0):
             raise ApplicationException(41, f'У уровня {self.inner_id} отсутствуют условия прохождения!')
         if self.condition_script is None or self.condition_script == '':
-            # print(self.conditions.values())
-            # cond_arr = [[c.condition_code, c.condition_type, c.condition_value] for c in self.conditions.values()]
-
             cond_arr = [
                 f"int(res.get_value(level_id, '{c.condition_code}')) {c.condition_type} int({c.condition_value})"
                 for c in self.conditions.values()]
@@ -133,23 +131,7 @@ class Level(object):
         res['failed_condition'] = [c.json_info() for c in self.failed_conditions.values()]
         return res
 
-    async def load_code_values(self):
-        '''
-        cvl = CodeValueList(self.conn)
 
-        level_cached_results = game_load_cache[self.game_id].get('code_value_list')
-        value_rows = []
-        if level_cached_results:
-            value_rows = list(filter(lambda el: el['level_id'] == self.level_id, level_cached_results))
-        else:
-            value_rows = cvl.select_by_level_and_types(level_id=self.level_id)
-
-        for value_row in value_rows:
-            try:
-                self.code_values[value_row['code_value']].append(int(value_row['code_id']))
-            except KeyError:
-                self.code_values[value_row['code_value']] = [int(value_row['code_id'])]
-        '''
 
     async def load_results(self):
         lrvl = LevelResultValueList(self.conn)
@@ -236,7 +218,6 @@ class Level(object):
         pass
 
     async def load_code_list(self):
-        cvl = CodeValueList(self.conn)
         rows = []
         '''
         level_cached_results = game_load_cache[self.game_id].get('code_value_list')

@@ -12,7 +12,7 @@ async def get_levels_info(conn: AsyncConnection, level_id: int = None, game_id: 
     if game_id is None:
         level_condition_list = await LevelConditionList(conn).select(level_id=level_id, is_fail=None)
     else:
-        level_condition_list = await LevelConditionList(conn).select_by_game(game_id=game_id)
+        level_condition_list = await LevelResultValueList(conn).select_by_game(game_id=game_id)
     level_condition_by_level = {}
     for level_condition in level_condition_list:
         try:

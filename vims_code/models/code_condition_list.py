@@ -1,3 +1,4 @@
+raise Exception("frozen")
 from sqlalchemy import text
 
 from vims_code.db.schema import t_code_condition_list

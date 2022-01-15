@@ -14,3 +14,9 @@ class GameList(SqlTable):
             or_(self.table.c.game_state == game_state, game_state == None)
         )
         return [dict(r) for r in (await self.conn.execute(sql)).fetchall()]
+
+    async def create(self, caption):
+        creation_date = datetime.datetime.now()
+        return (await super(GameList, self).create(caption=caption,
+                                                   game_state='WORKING',
+                                                   creation_date=creation_date))['id']

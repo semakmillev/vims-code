@@ -13,5 +13,5 @@ asyncpg
 aiofile
 aiohttp_middlewares
 poetry
-
-
+aiohttp-apispec
+aiohttp_swagger

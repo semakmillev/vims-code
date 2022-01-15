@@ -1,7 +1,6 @@
 from vims_code.auth.exceptions import SafetyFail
-from vims_code.models.code_condition_list import CodeConditionList
+# from vims_code.models.code_condition_list import CodeConditionList
 from vims_code.models.code_list import CodeList
-from vims_code.models.code_param_value_list import CodeParamValueList
 from vims_code.models.code_result_value_list import CodeResultValueList
 from vims_code.models.game_author_list import GameAuthorList
 from vims_code.models.game_list import GameList
@@ -167,7 +166,7 @@ async def set_codes(code_list: [], result_list: {}, condition_list: {}, param_li
     for code in deleted_codes:
         code_inner_id = code.get('code_inner_id')
         if code_inner_id:
-            await ca.clear_code_links(code_inner_id, level_id)
+            # await ca.clear_code_links(code_inner_id, level_id)
             await ca.delete_code(code['id'])
     if game_id in games:
         game = games[game_id]
@@ -277,19 +276,25 @@ async def level_code_list(level_id: int, action_request: ActionRequest):
     cl = CodeList(action_request.conn)
     code_list = await cl.select_by_level(level_id=level_id)
     crvl = CodeResultValueList(action_request.conn)
+    #
+    # ccl = CodeConditionList(action_request.conn)
+    # закомменченно до момента когда это действительно понадобится
+    '''
     cpvl = CodeParamValueList(action_request.conn)
-    ccl = CodeConditionList(action_request.conn)
     param_list = {f"{p['param_code']}|{p['param_type']}": p['param_type'] for p in
                   await cpvl.get_level_param_list(level_id=level_id)}
+    '''
+    param_list = []
     result_list = {f"{r['result_code']}|{r['result_type']}": r['result_type'] for r in
                    await crvl.get_level_result_list(level_id=level_id)}
-    condition_list = {f"{r['condition_code']}|{r['condition_type']}": r['condition_type'] for r in
-                      await ccl.get_code_condition_list_by_level(level_id=level_id)}
 
+    # condition_list = {f"{r['condition_code']}|{r['condition_type']}": r['condition_type'] for r in
+    #                  await ccl.get_code_condition_list_by_level(level_id=level_id)}
+    condition_list = []
     results = await crvl.get_code_result_values_by_level(level_id=level_id)
-    params = await cpvl.get_code_param_values_by_level(level_id=level_id)
-    conditions = await ccl.get_code_condition_values_by_level(level_id=level_id)
-
+    params = [] # await cpvl.get_code_param_values_by_level(level_id=level_id)
+    # conditions = await ccl.get_code_condition_values_by_level(level_id=level_id)
+    conditions = {}
     variables = {row['variable_code']: row['variable_type'] for row in
                  await VariableList(action_request.conn).select_game_vars(game_id)}
 

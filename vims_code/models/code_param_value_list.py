@@ -1,3 +1,5 @@
+raise Exception("frozen")
+# Данный функционал предусмотрен
 from sqlalchemy import text
 
 from vims_code.db.schema import t_code_param_value_list

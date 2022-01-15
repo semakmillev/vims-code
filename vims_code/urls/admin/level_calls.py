@@ -11,7 +11,7 @@ from vims_code.models.variable_list import VariableList
 import vims_code.game as gm
 from vims_code.game.game import games
 from vims_code.urls.admin.api import admin_routes, check_author
-from vims_code.admin import level as lv
+from vims_code.admin import level as lv, level
 from vims_code.urls.api import ActionRequest
 
 
@@ -27,7 +27,7 @@ async def level_list(game_id: int, action_request: ActionRequest = None) -> []:
 async def get_game_info(level_id: int, action_request: ActionRequest = None) -> {}:
     level_id = int(level_id)
     await check_author(action_request.conn, action_request.player_id, level_id)
-    res = (await admin.level.get_levels_info(action_request.conn, level_id=level_id)).get(level_id)
+    res = (await level.get_levels_info(action_request.conn, level_id=level_id)).get(level_id)
     return res
 
 

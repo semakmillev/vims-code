@@ -5,14 +5,14 @@ import asyncio
 
 from aiohttp import web
 # пул соединений с БД
-from vims_code.app import engine
+from vims_code.app import engine, logger
 from vims_code.app.server import create_app
 import vims_code.game as gm
 
 # В проекте вообще нет логгирования, т.к. пока не очень ясно, как его реализовывать.
 from vims_code.models.game_list import GameList
 from vims_code.urls import LIST_OF_ROUTES
-
+from aiohttp_swagger import swagger_path, setup_swagger
 
 async def start_games():
     async with engine.connect() as conn:
@@ -29,6 +29,13 @@ def run():
         app.add_routes(r)
     loop = asyncio.get_event_loop()
     loop.run_until_complete(start_games())
+    setup_swagger(
+        app,
+        swagger_from_file="vims_code/swagger3.yaml",
+        ui_version=3,
+        swagger_url="/docs",
+    )
+    logger.info('http://0.0.0.0:7001/docs')
     web.run_app(app=app, port=7001)
 
 

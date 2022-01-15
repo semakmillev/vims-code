@@ -8,7 +8,7 @@ class PlayerAlreadyExists(ApplicationException):
 
 class PlayerNotFound(ApplicationException):
     def __init__(self, reason):
-        super().__init__(ErrorCodes.OBJECT_NOT_FOUND, reason)
+        super().__init__(ErrorCodes.OBJECT_NOT_FOUND, reason, 403)
 
 
 class WrongSession(ApplicationException):
@@ -23,4 +23,4 @@ class WrongPassword(ApplicationException):
 
 class SafetyFail(ApplicationException):
     def __init__(self, reason):
-        super().__init__(ErrorCodes.FORBIDDEN, reason)
+        super().__init__(ErrorCodes.FORBIDDEN, reason, 403)

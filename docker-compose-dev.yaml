@@ -40,7 +40,6 @@ services:
     volumes:
       - ./_data:/var/lib/postgresql/data
 
-
 networks:
   vims-network:
     name: vims-network
