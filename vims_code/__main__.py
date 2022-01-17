@@ -26,7 +26,10 @@ async def start_games():
 def run():
     app = create_app()
     for r in LIST_OF_ROUTES:
-        app.add_routes(r)
+        try:
+            app.add_routes(r)
+        except Exception as ex:
+            print(r)
     loop = asyncio.get_event_loop()
     loop.run_until_complete(start_games())
     setup_swagger(

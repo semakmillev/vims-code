@@ -30,7 +30,7 @@ auth_routes = web.RouteTableDef()
 
 
 @white_list
-@auth_routes.post("/server/api/auth.register")
+@auth_routes.post("/server/api/register")
 async def register_player(login: str = None,
                           pwd: str = None,
                           email: str = None,
@@ -43,23 +43,25 @@ async def register_player(login: str = None,
         raise ApplicationException(ErrorCodes.OTHER, str(e))
         '''
 
-
 @white_list
-@auth_routes.post("/server/api/auth.login")
+@auth_routes.post("/server/api/login")
 async def login_player(login: str = None,
                        pwd: str = None,
                        action_request: ActionRequest = None):
     return await action_request.player_auth.auth(login, pwd)
 
 
-@auth_routes.post("/server/api/auth.create_team")
+@auth_routes.post("/server/api/team")
 async def create_team(team_caption: str, action_request: ActionRequest = None):
     team_auth = TeamAuthClass(action_request.conn)
     team_id = await team_auth.create_team(action_request.player_id, team_caption)
     return team_id
 
-
-@auth_routes.post("/server/api/auth.register_team_2_game")
+@auth_routes.get("/server/api/player_teams")
+async def player_teams(action_request: ActionRequest = None):
+    return await DatabaseTeam(action_request.conn).select_player_teams(action_request.player_id)
+'''
+@auth_routes.put("/server/api/register_team_2_game")
 async def register_team_2_game(team_id: int, game_id: int, action_request: ActionRequest = None):
     tprl = TeamPlayerRoleList(action_request.conn)
     if len(await tprl.select(team_id=team_id, player_id=action_request.player_id)) == 0:
@@ -70,19 +72,19 @@ async def register_team_2_game(team_id: int, game_id: int, action_request: Actio
         team_name = registered_teams[0]['caption']
         team_id = registered_teams[0]['id']
         error_text = f"Вами (или кем-то из ваших соуправленцев) уже подана заявка на игру от {team_name} (id{team_id})"
-        raise ApplicationException(43, error_text)
+        raise ApplicationException(43, error_text, 403)
     await gti.set(game_id=game_id, team_id=team_id)
     return await show_game_list(action_request)
-
-
-@auth_routes.post("/server/api/auth.generate_game_token")
+'''
+"""
+@auth_routes.post("/server/api/generate_game_token")
 async def generate_game_token(team_id: int, game_id: int, action_request: ActionRequest = None):
     team_auth = TeamAuthClass(action_request.conn)
     game_token = await team_auth.generate_token(game_id, team_id)
     return game_token
 
 
-@auth_routes.post("/server/api/auth.init_game_token")
+@auth_routes.post("/server/api/init_game_token")
 async def get_game_token(team_id: int, game_id: int, action_request: ActionRequest = None):
     tprl = TeamPlayerRoleList(action_request.conn)
     if len(await tprl.select(team_id=team_id, player_id=action_request.player_id, player_role='OWNER')) == 0:
@@ -123,4 +125,4 @@ async def get_team_token_info(token: str, action_request: ActionRequest):
     game_caption = (await GameList(action_request.conn).get(game_id))['caption']
 
     # gm.games[game_id].team_dict[team_id].tea
-    return dict(team_id=team_id, game_id=game_id, game_caption=game_caption, team_name=team_name)
+    return dict(team_id=team_id, game_id=game_id, game_caption=game_caption, team_name=team_name) """

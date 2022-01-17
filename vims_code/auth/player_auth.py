@@ -38,6 +38,7 @@ class PlayerAuthClass(object):
     async def register_player(self, login: str, pwd: str, email: str, player_type: str = 'HUMAN'):
         if await self.identify_player_by_login(login) is not None:
             raise PlayerAlreadyExists("Пользователь {login} уже существует".format(login=login))
+        pwd = str(pwd)
         salt = str(secrets.token_hex(10))
         secret_hash: HASH = hashlib.sha256()
         secret_hash.update(pwd.encode())
