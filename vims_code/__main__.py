@@ -2,7 +2,7 @@ import sys
 
 sys.path.append('vims-code')
 import asyncio
-
+import aiohttp
 from aiohttp import web
 # пул соединений с БД
 from vims_code.app import engine, logger
@@ -13,6 +13,7 @@ import vims_code.game as gm
 from vims_code.models.game_list import GameList
 from vims_code.urls import LIST_OF_ROUTES
 from aiohttp_swagger import swagger_path, setup_swagger
+from packaging import version
 
 async def start_games():
     async with engine.connect() as conn:
@@ -36,7 +37,12 @@ def run():
         swagger_url="/docs",
     )
     logger.info('http://0.0.0.0:7001/docs')
-    web.run_app(app=app, port=7001)
+
+    if version.parse(aiohttp.__version__) >= version.parse('3.8'):
+        web.run_app(app, port=7001, loop=loop)
+    else:
+        web.run_app(app, port=7001)
+
 
 
 if __name__ == '__main__':
