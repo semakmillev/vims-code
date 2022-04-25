@@ -2,11 +2,6 @@ import datetime
 import hashlib
 import secrets
 from _hashlib import HASH
-from functools import lru_cache
-
-from cachetools import lru
-
-from vims_code.app import ApplicationException, ErrorCodes
 from vims_code.auth.exceptions import PlayerAlreadyExists, WrongSession, PlayerNotFound, WrongPassword, SafetyFail
 
 from vims_code.models.player_auth import PlayerAuth
