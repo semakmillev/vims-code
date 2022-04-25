@@ -303,12 +303,12 @@ async def level_code_list(level_id: int, action_request: ActionRequest):
     result_list['POINTS|SIMPLE'] = 'SIMPLE'
 
     for code in code_list:
-        for param in param_list:
-            code['PAR_' + param] = param.get(code['id'], {param: None}).get(param, None)
+        #for param in param_list:
+        #    code['PAR_' + param] = param.get(code['id'], {param: None}).get(param, None)
         for result in result_list:
-            code['RES_' + result] = result.get(code['id'], {result: None}).get(result, None)
-        for condition in condition_list:
-            code['CON_' + condition] = condition.get(code['id'], {condition: None}).get(condition, None)
+            code['RES_' + result] = results.get(code['id'], {result: None}).get(result, None)
+        #for condition in condition_list:
+        #    code['CON_' + condition] = condition.get(code['id'], {condition: None}).get(condition, None)
     code_list = list(sorted(code_list, key=lambda el: (nvl(el['code_inner_id']), el['id'])))
     return dict(result_list=result_list, param_list=param_list, condition_list=condition_list,
                 code_list=code_list, variables=variables)
