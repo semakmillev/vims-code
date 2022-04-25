@@ -825,7 +825,7 @@ paths:
         200:
           description: Authentification completed
 
-  /server/admin/game/auth.register:
+  /server/api/auth.register:
     post:
       tags:
         - auth
